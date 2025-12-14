@@ -592,14 +592,14 @@ if (skia_compile_modules) {
       "tools/skslc/ProcessWorklist.h",
     ]
     libs = []
-    if (is_win) {
+    if (true) {
       sources += [ "tools/SkGetExecutablePath_win.cpp" ]
     } else if (is_mac || is_ios) {
       sources += [ "tools/SkGetExecutablePath_mac.cpp" ]
     } else if (is_linux || is_android) {
       sources += [ "tools/SkGetExecutablePath_linux.cpp" ]
     }
-    if (is_win) {
+    if (true) {
       sources += [ "src/ports/SkOSFile_win.cpp" ]
     } else {
       sources += [ "src/ports/SkOSFile_posix.cpp" ]
@@ -721,14 +721,14 @@ if (skia_compile_sksl_tests) {
       "tools/skslc/ProcessWorklist.h",
     ]
     libs = []
-    if (is_win) {
+    if (true) {
       sources += [ "tools/SkGetExecutablePath_win.cpp" ]
     } else if (is_mac || is_ios) {
       sources += [ "tools/SkGetExecutablePath_mac.cpp" ]
     } else if (is_linux || is_android) {
       sources += [ "tools/SkGetExecutablePath_linux.cpp" ]
     }
-    if (is_win) {
+    if (true) {
       sources += [ "src/ports/SkOSFile_win.cpp" ]
     } else {
       sources += [ "src/ports/SkOSFile_posix.cpp" ]
@@ -1541,7 +1541,7 @@ skia_component("skia") {
     sources += skia_no_encode_webp_srcs
   }
 
-  if (is_win) {
+  if (true) {
     sources += [
       "src/ports/SkDebug_win.cpp",
       "src/ports/SkImageGeneratorWIC.cpp",
