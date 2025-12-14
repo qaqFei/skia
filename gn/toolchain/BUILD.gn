@@ -278,16 +278,6 @@ gcc_like_toolchain("mingw") {
   cxx = target_cxx
   link = target_link
   os = target_os
-
-  toolchain_args = {
-    current_cpu = target_cpu
-    current_os = "win"
-    is_clang = false
-    clang_win = ""
-    win_vc = ""
-    win_sdk = ""
-    win_toolchain_version = ""
-  }
 }
 
 gcc_like_toolchain("mingw_host") {
