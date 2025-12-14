@@ -174,9 +174,9 @@ jobs:
           #      obj/libskia.a obj/libskparagraph.a obj/libskshaper.a obj/libskunicode.a \
           #      ../../include
           # Windows
-          tar -C $HOME/skia/skia/out/win-x64 -czf $HOME/artifacts/skia-windows-x64-release.tar.gz \
-               obj/skia.lib obj/paragraph.lib obj/shaper.lib obj/unicode.lib \
-               ../../include
+          tar -C /home/runner/skia/skia/out/win-x64 -czf $HOME/artifacts/skia-windows-x64-release.tar.gz \
+          #      obj/skia.lib obj/paragraph.lib obj/shaper.lib obj/unicode.lib \
+          #      ../../include
       # 6. 上传 Release
       - name: Release
         uses: softprops/action-gh-release@v1
