@@ -1,4 +1,4 @@
-name: Cross-compile Skia (Linux & Windows x64)
+name: Cross-compile Skia
 
 on:
   push:
@@ -61,78 +61,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install depot_tools & cross toolchain
+      - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git python3 python3-pip ninja-build \
-               gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 binutils-mingw-w64-x86-64
-          sudo apt-get install -y libfreetype6-dev
-          sudo apt-get install -y \
-              libfreetype6-dev \
-              libjpeg-dev \
-              libpng-dev \
-              libwebp-dev \
-              libegl1-mesa-dev \
-              libgl1-mesa-dev \
-              ninja-build \
-              python3 python3-pip \
-              git \
-              gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 binutils-mingw-w64-x86-64
-            sudo apt-get update && sudo apt-get install -y \
-              build-essential \
-              ninja-build \
-              python3 python3-pip \
-              git \
-              pkg-config \
-              libfreetype6-dev \
-              libfontconfig1-dev \
-              libjpeg-dev \
-              libpng-dev \
-              libwebp-dev \
-              libegl1-mesa-dev \
-              libgl1-mesa-dev \
-              libx11-dev \
-              libxext-dev \
-              libxfixes-dev \
-              libxrender-dev \
-              libxrandr-dev \
-              libxcomposite-dev \
-              libxdamage-dev \
-              libxshmfence-dev \
-              libgbm-dev \
-              libdrm-dev \
-              libxxf86vm-dev \
-              libpci-dev \
-              libdbus-1-dev \
-              libpulse-dev \
-              libasound2-dev \
-              libudev-dev \
-              libcups2-dev \
-              libgtk-3-dev \
-              gcc-mingw-w64-x86-64 \
-              g++-mingw-w64-x86-64 \
-              binutils-mingw-w64-x86-64
-
+          sudo apt-get install -y libx11-dev build-essential libudev-dev libxshmfence-dev g++-mingw-w64-x86-64 ninja-build libgtk-3-dev libxfixes-dev libdbus-1-dev pkg-config libxext-dev libxxf86vm-dev libegl1-mesa-dev libgbm-dev libwebp-dev libpci-dev libcups2-dev libasound2-dev git binutils-mingw-w64-x86-64 gcc-mingw-w64-x86-64 libfontconfig1-dev python3-pip libpng-dev libxcomposite-dev libdrm-dev libxdamage-dev libfreetype6-dev libjpeg-dev libxrandr-dev libpulse-dev python3 libxrender-dev libgl1-mesa-dev
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git  --depth 1 $HOME/depot_tools
           echo "$HOME/depot_tools" >> $GITHUB_PATH
-
-      - name: Fetch Deps
-        run: |
           python3 tools/git-sync-deps --shallow
 
       - name: Build Windows x64
         run: |
-          cd /home/runner/work/skia/skia
           bin/gn gen out/win-x64 --args='${{ env.GN_ARGS_WINDOWS }}'
           ninja -C out/win-x64
 
-      - name: Package
-        run: |
-          mkdir -p /home/runner/work/artifacts
-          tar -C /home/runner/work/skia/skia/out/win-x64 -czf /home/runner/work/artifacts/skia-windows-x64.tar.gz .
-          
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: skia-windows-x64
-          path: /home/runner/work/artifacts/skia-windows-x64.tar.gz
+          path: out/win-x64
