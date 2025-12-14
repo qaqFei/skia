@@ -144,6 +144,8 @@ jobs:
             https://github.com/msys2/msys2-installer/releases/download/2025-12-13/msys2-base-x86_64-20251213.tar.xz
           sudo tar -C /opt -xf /tmp/msys2.tar.xz
 
+          ls /opt/
+
           # 2) 初始化 pacman 数据库（不升级系统）
           /opt/msys64/usr/bin/bash -lc 'pacman -Sy --noconfirm'
 
