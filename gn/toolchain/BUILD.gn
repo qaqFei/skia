@@ -12,6 +12,7 @@ toolchain("linux_mingw_x64") {
       "{{cflags}}",
       "{{cflags_c}}",
     ]
+    args = args
   }
 
   tool("cxx") {
@@ -26,6 +27,7 @@ toolchain("linux_mingw_x64") {
       "{{cflags}}",
       "{{cflags_cc}}",
     ]
+    args = args
   }
 
   tool("alink") {
@@ -36,6 +38,7 @@ toolchain("linux_mingw_x64") {
       "{{output}}",
       "{{inputs}}",
     ]
+    args = args
   }
 
   tool("solink") {
@@ -48,6 +51,7 @@ toolchain("linux_mingw_x64") {
       "{{ldflags}}",
       "{{libs}}",
     ]
+    args = args
   }
 
   tool("link") {
@@ -59,6 +63,7 @@ toolchain("linux_mingw_x64") {
       "{{ldflags}}",
       "{{libs}}",
     ]
+    args = args
   }
 
   tool("rc") {
@@ -70,5 +75,6 @@ toolchain("linux_mingw_x64") {
       "-O", "coff",
       "-o", "{{output}}",
     ]
+    args = args
   }
 }
