@@ -19,7 +19,7 @@ declare_args() {
   target_ar = "${mingw_prefix}ar"
   target_cc = "${mingw_prefix}gcc"
   target_cxx = "${mingw_prefix}g++"
-  target_link = target_cxx
+  target_link = "${mingw_prefix}g++"
 
   cc_wrapper = ""      # 如需 ccache 可填 ccache
 }
