@@ -148,7 +148,7 @@ jobs:
       # 4. 编译 Windows 版本（MinGW 交叉）
       - name: Build Windows x64
         run: |
-          cd $HOME/skia/skia
+          cd /home/runner/work/skia/skia
           # 让 GN 找到我们的交叉工具链
           bin/gn gen out/win-x64 --args='${{ env.GN_ARGS_WINDOWS }}'
           ninja -C out/win-x64
