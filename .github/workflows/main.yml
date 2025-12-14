@@ -68,6 +68,13 @@ env:
     skia_use_wuffs=false
     skia_enable_vulkan_debug_layers=false
     skia_use_spirv_validation=false
+    skia_use_zlib=true
+    skia_use_system_zlib=false
+    skia_use_system_libpng=false
+    skia_use_system_libjpeg=false
+    skia_use_system_libwebp=false
+    skia_use_system_zlib=false
+    skia_use_system_icu=false
     # ===== 下面 4 行让 GN 正确找到 MinGW 交叉工具链 =====
     ar="x86_64-w64-mingw32-ar"
     cc="x86_64-w64-mingw32-gcc"
