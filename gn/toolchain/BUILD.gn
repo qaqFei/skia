@@ -1,80 +1,73 @@
-# toolchain for Linux -> Windows x64 (MinGW)
 toolchain("linux_mingw_x64") {
   tool("cc") {
     command = "x86_64-w64-mingw32-gcc"
     outputs = [ "{{target_out_dir}}/{{target_output_name}}.o" ]
-    args = [
-      "-c",
-      "{{source}}",
-      "-o", "{{output}}",
-      "{{defines}}",
-      "{{include_dirs}}",
-      "{{cflags}}",
-      "{{cflags_c}}",
-    ]
-    args = args
+    rspfile_content = """
+      -c
+      {{source}}
+      -o {{output}}
+      {{defines}}
+      {{include_dirs}}
+      {{cflags}}
+      {{cflags_c}}
+    """
   }
 
   tool("cxx") {
     command = "x86_64-w64-mingw32-g++"
     outputs = [ "{{target_out_dir}}/{{target_output_name}}.o" ]
-    args = [
-      "-c",
-      "{{source}}",
-      "-o", "{{output}}",
-      "{{defines}}",
-      "{{include_dirs}}",
-      "{{cflags}}",
-      "{{cflags_cc}}",
-    ]
-    args = args
+    rspfile_content = """
+      -c
+      {{source}}
+      -o {{output}}
+      {{defines}}
+      {{include_dirs}}
+      {{cflags}}
+      {{cflags_cc}}
+    """
   }
 
   tool("alink") {
     command = "x86_64-w64-mingw32-ar"
     outputs = [ "{{target_output_name}}.a" ]
-    args = [
-      "rcs",
-      "{{output}}",
-      "{{inputs}}",
-    ]
-    args = args
+    rspfile_content = """
+      rcs
+      {{output}}
+      {{inputs}}
+    """
   }
 
   tool("solink") {
     command = "x86_64-w64-mingw32-g++"
     outputs = [ "{{target_output_name}}.dll" ]
-    args = [
-      "-shared",
-      "-o", "{{output}}",
-      "{{inputs}}",
-      "{{ldflags}}",
-      "{{libs}}",
-    ]
-    args = args
+    rspfile_content = """
+      -shared
+      -o {{output}}
+      {{inputs}}
+      {{ldflags}}
+      {{libs}}
+    """
   }
 
   tool("link") {
     command = "x86_64-w64-mingw32-g++"
     outputs = [ "{{target_output_name}}.exe" ]
-    args = [
-      "-o", "{{output}}",
-      "{{inputs}}",
-      "{{ldflags}}",
-      "{{libs}}",
-    ]
-    args = args
+    rspfile_content = """
+      -o {{output}}
+      {{inputs}}
+      {{ldflags}}
+      {{libs}}
+    """
   }
 
   tool("rc") {
     command = "x86_64-w64-mingw32-windres"
     outputs = [ "{{target_out_dir}}/{{target_output_name}}.res" ]
-    args = [
-      "{{source}}",
-      "{{rcflags}}",
-      "-O", "coff",
-      "-o", "{{output}}",
-    ]
-    args = args
+    rspfile_content = """
+      {{source}}
+      {{rcflags}}
+      -O coff
+      -o {{output}}
+    """
   }
 }

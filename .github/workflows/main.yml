@@ -3,6 +3,8 @@ name: Cross-compile Skia (Linux & Windows x64)
 on:
   push:
     branches: [ main ]
+  
+  workflow_dispatch:
 
 env:
   GN_ARGS_LINUX: |-
