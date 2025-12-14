@@ -196,6 +196,7 @@ if (is_win) {
   set_default_toolchain("//gn/toolchain:mingw")
   default_toolchain_name = "mingw"
   host_toolchain = "mingw_host"
+  is_win = false
 } else if (is_wasm) {
   set_default_toolchain("//gn/toolchain:wasm")
   default_toolchain_name = "wasm"
