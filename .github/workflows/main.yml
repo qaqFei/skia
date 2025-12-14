@@ -72,6 +72,7 @@ env:
     skia_use_system_zlib=false
     skia_use_system_libpng=false
     skia_use_system_libjpeg=false
+    skia_use_system_libjpeg_turbo=false
     skia_use_system_libwebp=false
     skia_use_system_zlib=false
     skia_use_system_icu=false
@@ -80,8 +81,7 @@ env:
     cc="x86_64-w64-mingw32-gcc"
     cxx="x86_64-w64-mingw32-g++"
     rc="x86_64-w64-mingw32-windres"
-    extra_cflags=["-O3","-DSK_DISABLE_LEGACY_PNG_WRITEBUFFER","-I/usr/x86_64-w64-mingw32/include", "-I/opt/mingw64/include"]
-    extra_ldflags=["-L/usr/x86_64-w64-mingw32/lib", "-L/opt/mingw64/lib"]
+    extra_cflags=["-O3","-DSK_DISABLE_LEGACY_PNG_WRITEBUFFER"]
 
 jobs:
   build:
