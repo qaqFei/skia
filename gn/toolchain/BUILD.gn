@@ -277,6 +277,7 @@ gcc_like_toolchain("mingw") {
   cc = target_cc
   cxx = target_cxx
   link = target_link
+  os = target_os
 
   toolchain_args = {
     current_cpu = target_cpu
@@ -295,4 +296,5 @@ gcc_like_toolchain("mingw_host") {
   cc = host_cc
   cxx = host_cxx
   link = host_link
+  os = host_os
 }
