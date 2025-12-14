@@ -24,6 +24,11 @@ declare_args() {
 # 1. 工具链模板
 template("mingw_toolchain") {
   toolchain(target_name) {
+    link  = invoker.link
+    ar    = invoker.ar
+    cc    = invoker.cc
+    cxx   = invoker.cxx
+
     toolchain_args = {
       current_cpu = invoker.cpu
       current_os = "win"
