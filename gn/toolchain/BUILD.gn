@@ -101,8 +101,16 @@ template("mingw_toolchain") {
 # 2. 实例化工具链
 mingw_toolchain("mingw") {
   cpu = target_cpu   # x64 / x86 / arm64 均可
+  ar = target_ar
+  cc = target_cc
+  cxx = target_cxx
+  link = target_link
 }
 
 mingw_toolchain("mingw_host") {
   cpu = host_cpu     # x64 / x86 / arm64 均可
+  ar = host_ar
+  cc = host_cc
+  cxx = host_cxx
+  link = host_link
 }
