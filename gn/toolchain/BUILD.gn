@@ -1,73 +1,102 @@
-toolchain("linux_mingw_x64") {
-  tool("cc") {
-    command = "x86_64-w64-mingw32-gcc"
-    outputs = [ "{{target_out_dir}}/{{target_output_name}}.o" ]
-    rspfile_content = """
-      -c
-      {{source}}
-      -o {{output}}
-      {{defines}}
-      {{include_dirs}}
-      {{cflags}}
-      {{cflags_c}}
-    """
-  }
+# BUILD.gn  -  Linux host 交叉编译 Windows MinGW-w64 工具链
+# 用法示例：
+#   gn gen out/cross --args='
+#       is_debug=false
+#       target_cpu="x64"
+#       target_os="win"
+#       mingw_toolchain="//:mingw"
 
-  tool("cxx") {
-    command = "x86_64-w64-mingw32-g++"
-    outputs = [ "{{target_out_dir}}/{{target_output_name}}.o" ]
-    rspfile_content = """
-      -c
-      {{source}}
-      -o {{output}}
-      {{defines}}
-      {{include_dirs}}
-      {{cflags}}
-      {{cflags_cc}}
-    """
-  }
+# 0. 基本参数
+declare_args() {
+  # 交叉工具链前缀，可按实际路径修改
+  mingw_prefix = "x86_64-w64-mingw32-"
 
-  tool("alink") {
-    command = "x86_64-w64-mingw32-ar"
-    outputs = [ "{{target_output_name}}.a" ]
-    rspfile_content = """
-      rcs
-      {{output}}
-      {{inputs}}
-    """
-  }
+  host_ar = "ar"
+  host_cc = "gcc"
+  host_cxx = "g++"
+  host_link = host_cxx
 
-  tool("solink") {
-    command = "x86_64-w64-mingw32-g++"
-    outputs = [ "{{target_output_name}}.dll" ]
-    rspfile_content = """
-      -shared
-      -o {{output}}
-      {{inputs}}
-      {{ldflags}}
-      {{libs}}
-    """
-  }
+  target_ar = "${mingw_prefix}ar"
+  target_cc = "${mingw_prefix}gcc"
+  target_cxx = "${mingw_prefix}g++"
+  target_link = target_cxx
 
-  tool("link") {
-    command = "x86_64-w64-mingw32-g++"
-    outputs = [ "{{target_output_name}}.exe" ]
-    rspfile_content = """
-      -o {{output}}
-      {{inputs}}
-      {{ldflags}}
-      {{libs}}
-    """
-  }
+  cc_wrapper = ""      # 如需 ccache 可填 ccache
+}
 
-  tool("rc") {
-    command = "x86_64-w64-mingw32-windres"
-    outputs = [ "{{target_out_dir}}/{{target_output_name}}.res" ]
-    rspfile_content = """
-      {{source}}
-      {{rcflags}}
-      -O coff
-      -o {{output}}
-    """
+# 1. 工具链模板
+template("mingw_toolchain") {
+  toolchain(target_name) {
+    toolchain_args = {
+      current_cpu = invoker.cpu
+      current_os = "win"
+    }
+
+    lib_switch = "-l"
+    lib_dir_switch = "-L"
+
+    tool("cc") {
+      depfile = "{{output}}.d"
+      command = "$cc_wrapper $cc -MD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_c}} -c {{source}} -o {{output}}"
+      depsformat = "gcc"
+      outputs = [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.o" ]
+      description = "CC  {{source}}"
+    }
+
+    tool("cxx") {
+      depfile = "{{output}}.d"
+      command = "$cc_wrapper $cxx -MD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_cc}} -c {{source}} -o {{output}}"
+      depsformat = "gcc"
+      outputs = [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.o" ]
+      description = "CXX {{source}}"
+    }
+
+    tool("asm") {
+      command = "$cc_wrapper $cc -c {{asmflags}} {{source}} -o {{output}}"
+      outputs = [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.o" ]
+      description = "ASM {{source}}"
+    }
+
+    tool("alink") {
+      rspfile = "{{output}}.rsp"
+      rspfile_content = "{{inputs}}"
+      command = "rm -f {{output}} && $ar rcs {{output}} @$rspfile"
+      outputs = [ "{{root_out_dir}}/{{target_output_name}}{{output_extension}}" ]
+      default_output_extension = ".a"
+      output_prefix = "lib"
+      description = "AR  {{output}}"
+    }
+
+    tool("solink") {
+      soname = "{{target_output_name}}{{output_extension}}"
+      rspfile = "{{output}}.rsp"
+      rspfile_content = "{{inputs}}"
+      command = "$link -shared {{ldflags}} -Wl,--out-implib,{{root_out_dir}}/{{target_output_name}}.dll.a -Wl,--soname,$soname @$rspfile {{libs}} -o {{output}}"
+      outputs = [ "{{root_out_dir}}/$soname" ]
+      default_output_extension = ".dll"
+      output_prefix = ""
+      description = "DLL {{output}}"
+    }
+
+    tool("link") {
+      exename = "{{root_out_dir}}/{{target_output_name}}{{output_extension}}"
+      rspfile = "$exename.rsp"
+      rspfile_content = "{{inputs}}"
+      command = "$link {{ldflags}} @$rspfile {{libs}} -o $exename"
+      outputs = [ "$exename" ]
+      default_output_extension = ".exe"
+      description = "EXE $exename"
+    }
+
+    tool("stamp")   { command = "touch {{output}}" }
+    tool("copy")    {
+      cp_py = rebase_path("//bin/cp.py")   # Skia 自带
+      command = "python3 \"$cp_py\" {{source}} {{output}}"
+    }
   }
+}
+
+# 2. 实例化工具链
+mingw_toolchain("mingw") {
+  cpu = target_cpu   # x64 / x86 / arm64 均可
 }

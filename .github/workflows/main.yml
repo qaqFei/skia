@@ -137,8 +137,6 @@ jobs:
 
       - name: Fetch Deps
         run: |
-          pwd
-          ls
           python3 tools/git-sync-deps --shallow
           
       # 3. 编译 Linux 版本
