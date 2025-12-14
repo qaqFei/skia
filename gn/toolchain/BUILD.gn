@@ -8,18 +8,15 @@
 
 # 0. 基本参数
 declare_args() {
-  # 交叉工具链前缀，可按实际路径修改
-  mingw_prefix = "x86_64-w64-mingw32-"
-
   host_ar = "ar"
   host_cc = "gcc"
   host_cxx = "g++"
-  host_link = host_cxx
+  host_link = "g++"
 
-  target_ar = "${mingw_prefix}ar"
-  target_cc = "${mingw_prefix}gcc"
-  target_cxx = "${mingw_prefix}g++"
-  target_link = "${mingw_prefix}g++"
+  target_ar = "x86_64-w64-mingw32-ar"
+  target_cc = "x86_64-w64-mingw32-gcc"
+  target_cxx = "x86_64-w64-mingw32-g++"
+  target_link = "x86_64-w64-mingw32-g++"
 
   cc_wrapper = ""      # 如需 ccache 可填 ccache
 }
