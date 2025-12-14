@@ -73,8 +73,8 @@ env:
     cc="x86_64-w64-mingw32-gcc"
     cxx="x86_64-w64-mingw32-g++"
     rc="x86_64-w64-mingw32-windres"
-    extra_cflags=["-O3","-DSK_DISABLE_LEGACY_PNG_WRITEBUFFER","-I/usr/x86_64-w64-mingw32/include"]
-    extra_ldflags=["-L/usr/x86_64-w64-mingw32/lib"]
+    extra_cflags=["-O3","-DSK_DISABLE_LEGACY_PNG_WRITEBUFFER","-I/usr/x86_64-w64-mingw32/include", "-I/opt/mingw64/include"]
+    extra_ldflags=["-L/usr/x86_64-w64-mingw32/lib", "-L/opt/mingw64/lib"]
 
 jobs:
   build:
@@ -134,21 +134,35 @@ jobs:
               gcc-mingw-w64-x86-64 \
               g++-mingw-w64-x86-64 \
               binutils-mingw-w64-x86-64
-          
-          sudo apt install -y \
-            mingw-w64-tools \
-            mingw-w64-x86-64-dev \
-            mingw-w64-zlib-dev \
-            mingw-w64-libpng-dev \
-            mingw-w64-libjpeg-turbo-dev \
-            mingw-w64-libwebp-dev \
-            mingw-w64-expat-dev \
-            mingw-w64-freetype-dev \
-            mingw-w64-harfbuzz-dev \
-            mingw-w64-bzip2-dev \
-            mingw-w64-gif-dev
+
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git  --depth 1 $HOME/depot_tools
           echo "$HOME/depot_tools" >> $GITHUB_PATH
+
+      - name: Fetch MinGW deps from MSYS2
+        run: |
+          curl -L -o /tmp/msys2.tar.xz \
+            https://github.com/msys2/msys2-installer/releases/download/2025-12-13/msys2-base-x86_64-20251213.tar.xz
+          sudo tar -C /opt -xf /tmp/msys2.tar.xz
+
+          # 2) 初始化 pacman 数据库（不升级系统）
+          /opt/msys64/usr/bin/bash -lc 'pacman -Sy --noconfirm'
+
+          # 3) 只下载、不安装，把包解到 /opt/mingw64
+          mkdir -p /opt/mingw64
+          for pkg in \
+            mingw-w64-x86_64-zlib \
+            mingw-w64-x86_64-libpng \
+            mingw-w64-x86_64-libjpeg-turbo \
+            mingw-w64-x86_64-libwebp \
+            mingw-w64-x86_64-freetype \
+            mingw-w64-x86_64-expat; do
+            /opt/msys64/usr/bin/bash -lc "pacman -Sw --noconfirm $pkg"
+            /opt/msys64/usr/bin/bash -lc "pacman -Qp /var/cache/pacman/pkg/$pkg-*.zst"  # 确认文件名
+            sudo tar -C /opt/mingw64 --strip-components=1 -xf /var/cache/pacman/pkg/$pkg-*.zst
+          done
+
+          # 4) 清理
+          sudo rm -rf /opt/msys64 /tmp/msys2.tar.xz
 
       - name: Fetch Deps
         run: |
