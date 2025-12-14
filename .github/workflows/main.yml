@@ -1,0 +1,173 @@
+name: Cross-compile Skia (Linux & Windows x64)
+
+on:
+  workflow_dispatch:
+
+env:
+  GN_ARGS_LINUX: |-
+    is_official_build=true
+    is_debug=false
+    target_cpu="x64"
+    skia_use_gl=true
+    skia_use_egl=true
+    skia_use_vulkan=false
+    skia_use_metal=false
+    skia_use_dawn=false
+    skia_use_direct3d=false
+    skia_enable_fontmgr_empty=false
+    skia_enable_fontmgr_win=false
+    skia_enable_fontmgr_win_gdi=false
+    skia_use_icu=false
+    skia_use_libpng_decode=true
+    skia_use_libjpeg_turbo_decode=true
+    skia_use_libwebp_decode=true
+    skia_use_libpng_encode=false
+    skia_use_libjpeg_turbo_encode=false
+    skia_use_libwebp_encode=false
+    skia_use_zlib=true
+    skia_enable_svg=true
+    skia_enable_pdf=false
+    skia_use_xps=false
+    skia_use_expat=true
+    skia_use_system_expat=false
+    skia_use_wuffs=false
+    skia_enable_vulkan_debug_layers=false
+    skia_use_spirv_validation=false
+    extra_cflags=["-O3","-DSK_DISABLE_LEGACY_PNG_WRITEBUFFER"]
+  GN_ARGS_WINDOWS: |-
+    target_os="win"
+    target_cpu="x64"
+    is_official_build=true
+    is_debug=false
+    clang_win=false
+    skia_use_gl=true
+    skia_use_egl=false
+    skia_use_vulkan=false
+    skia_use_metal=false
+    skia_use_dawn=false
+    skia_use_direct3d=false
+    skia_enable_fontmgr_empty=false
+    skia_enable_fontmgr_win=true
+    skia_enable_fontmgr_win_gdi=false
+    skia_use_icu=false
+    skia_use_libpng_decode=true
+    skia_use_libjpeg_turbo_decode=true
+    skia_use_libwebp_decode=true
+    skia_use_libpng_encode=false
+    skia_use_libjpeg_turbo_encode=false
+    skia_use_libwebp_encode=false
+    skia_use_zlib=true
+    skia_enable_svg=true
+    skia_enable_pdf=false
+    skia_use_xps=false
+    skia_use_expat=true
+    skia_use_system_expat=false
+    skia_use_wuffs=false
+    skia_enable_vulkan_debug_layers=false
+    skia_use_spirv_validation=false
+    extra_cflags=["-O3","-DSK_DISABLE_LEGACY_PNG_WRITEBUFFER"]
+    # ===== 下面 4 行让 GN 正确找到 MinGW 交叉工具链 =====
+    ar="x86_64-w64-mingw32-ar"
+    cc="x86_64-w64-mingw32-gcc"
+    cxx="x86_64-w64-mingw32-g++"
+    rc="x86_64-w64-mingw32-windres"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4   # 拉你自己的仓库（可有可无，主要是放 yml）
+
+      # 1. 安装依赖
+      - name: Install depot_tools & cross toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git python3 python3-pip ninja-build \
+               gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 binutils-mingw-w64-x86-64
+          sudo apt-get install -y libfreetype6-dev
+          sudo apt-get install -y \
+              libfreetype6-dev \
+              libjpeg-dev \
+              libpng-dev \
+              libwebp-dev \
+              libegl1-mesa-dev \
+              libgl1-mesa-dev \
+              ninja-build \
+              python3 python3-pip \
+              git \
+              gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 binutils-mingw-w64-x86-64
+            sudo apt-get update && sudo apt-get install -y \
+              build-essential \
+              ninja-build \
+              python3 python3-pip \
+              git \
+              pkg-config \
+              libfreetype6-dev \
+              libfontconfig1-dev \
+              libjpeg-dev \
+              libpng-dev \
+              libwebp-dev \
+              libegl1-mesa-dev \
+              libgl1-mesa-dev \
+              libx11-dev \
+              libxext-dev \
+              libxfixes-dev \
+              libxrender-dev \
+              libxrandr-dev \
+              libxcomposite-dev \
+              libxdamage-dev \
+              libxshmfence-dev \
+              libgbm-dev \
+              libdrm-dev \
+              libxxf86vm-dev \
+              libpci-dev \
+              libdbus-1-dev \
+              libpulse-dev \
+              libasound2-dev \
+              libudev-dev \
+              libcups2-dev \
+              libgtk-3-dev \
+              gcc-mingw-w64-x86-64 \
+              g++-mingw-w64-x86-64 \
+              binutils-mingw-w64-x86-64
+          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git  --depth 1 $HOME/depot_tools
+          echo "$HOME/depot_tools" >> $GITHUB_PATH
+
+      - name: Fetch Deps
+        run: |
+          pwd
+          ls
+          python3 tools/git-sync-deps --shallow
+          
+      # 3. 编译 Linux 版本
+      # - name: Build Linux x64
+      #   run: |
+      #     cd $HOME/skia/skia
+      #     bin/gn gen out/linux-x64 --args='${{ env.GN_ARGS_LINUX }}'
+      #     ninja -C out/linux-x64
+
+      # 4. 编译 Windows 版本（MinGW 交叉）
+      - name: Build Windows x64
+        run: |
+          cd $HOME/skia/skia
+          # 让 GN 找到我们的交叉工具链
+          bin/gn gen out/win-x64 --args='${{ env.GN_ARGS_WINDOWS }}'
+          ninja -C out/win-x64
+      # 5. 打包
+      - name: Package
+        run: |
+          mkdir -p $HOME/artifacts
+          # Linux
+          # tar -C $HOME/skia/skia/out/linux-x64 -czf $HOME/artifacts/skia-linux-x64-release.tar.gz \
+          #      obj/libskia.a obj/libskparagraph.a obj/libskshaper.a obj/libskunicode.a \
+          #      ../../include
+          # Windows
+          tar -C $HOME/skia/skia/out/win-x64 -czf $HOME/artifacts/skia-windows-x64-release.tar.gz \
+               obj/skia.lib obj/paragraph.lib obj/shaper.lib obj/unicode.lib \
+               ../../include
+      # 6. 上传 Release
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: $HOME/artifacts/*.tar.gz
+          generate_release_notes: true
