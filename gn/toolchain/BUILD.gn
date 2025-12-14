@@ -97,3 +97,7 @@ template("mingw_toolchain") {
 mingw_toolchain("mingw") {
   cpu = target_cpu   # x64 / x86 / arm64 均可
 }
+
+mingw_toolchain("mingw_host") {
+  cpu = host_cpu     # x64 / x86 / arm64 均可
+}

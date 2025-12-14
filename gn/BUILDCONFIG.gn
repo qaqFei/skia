@@ -193,9 +193,9 @@ if (!is_official_build) {
 
 if (is_win) {
   # Windows tool chain
-  set_default_toolchain("//gn/toolchain")
-  default_toolchain_name = "linux_mingw_x64"
-  host_toolchain = "linux_mingw_x64_host"
+  set_default_toolchain("//gn/toolchain:mingw")
+  default_toolchain_name = "mingw"
+  host_toolchain = "mingw_host"
 } else if (is_wasm) {
   set_default_toolchain("//gn/toolchain:wasm")
   default_toolchain_name = "wasm"
