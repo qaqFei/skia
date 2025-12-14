@@ -94,9 +94,9 @@ template("gcc_like_toolchain") {
       default_output_extension = ".a"
       output_prefix = "lib"
       description = "link {{output}}"
-      if (0 <= link_pool_depth) {
-        pool = ":link_pool($default_toolchain)"
-      }
+      # if (0 <= link_pool_depth) {
+      #   pool = ":link_pool($default_toolchain)"
+      # }
     }
 
     tool("solink") {
@@ -132,9 +132,9 @@ template("gcc_like_toolchain") {
         default_output_extension = ".so"
       }
       description = "link {{output}}"
-      if (0 <= link_pool_depth) {
-        pool = ":link_pool($default_toolchain)"
-      }
+      # if (0 <= link_pool_depth) {
+      #   pool = ":link_pool($default_toolchain)"
+      # }
     }
 
     tool("link") {
@@ -158,9 +158,9 @@ template("gcc_like_toolchain") {
 
       outputs = [ "$exe_name" ]
       description = "link {{output}}"
-      if (0 <= link_pool_depth) {
-        pool = ":link_pool($default_toolchain)"
-      }
+      # if (0 <= link_pool_depth) {
+      #   pool = ":link_pool($default_toolchain)"
+      # }
     }
 
     tool("stamp") {
