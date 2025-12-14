@@ -163,17 +163,6 @@ jobs:
       - name: Build Windows x64
         run: |
           cd /home/runner/work/skia/skia
-          
-          sudo sed -i \
-            '/virtual DWRITE_GLYPH_IMAGE_FORMATS STDMETHODCALLTYPE GetGlyphImageFormats(/a\
-              virtual HRESULT STDMETHODCALLTYPE GetGlyphImageFormats(\
-                  UINT32 glyphId,\
-                  UINT32 pixelsPerEm,\
-                  UINT32 maxImageFileSize,\
-                  DWRITE_GLYPH_IMAGE_FORMATS *formats) PURE;' \
-            /usr/share/mingw-w64/include/dwrite_3.h
-          
-          # 让 GN 找到我们的交叉工具链
           bin/gn gen out/win-x64 --args='${{ env.GN_ARGS_WINDOWS }}'
           ninja -C out/win-x64
       # 5. 打包
