@@ -99,15 +99,25 @@ template("mingw_toolchain") {
 }
 
 # 2. 实例化工具链
-mingw_toolchain("mingw") {
+gcc_like_toolchain("mingw") {
   cpu = target_cpu   # x64 / x86 / arm64 均可
   ar = target_ar
   cc = target_cc
   cxx = target_cxx
   link = target_link
+
+  toolchain_args = {
+    current_cpu = target_cpu
+    current_os = "win"
+    is_clang = false
+    clang_win = ""
+    win_vc = ""
+    win_sdk = ""
+    win_toolchain_version = ""
+  }
 }
 
-mingw_toolchain("mingw_host") {
+gcc_like_toolchain("mingw_host") {
   cpu = host_cpu     # x64 / x86 / arm64 均可
   ar = host_ar
   cc = host_cc
