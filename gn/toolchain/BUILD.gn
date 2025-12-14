@@ -164,7 +164,7 @@ template("gcc_like_toolchain") {
     }
 
     tool("stamp") {
-      command = "$stamp {{output}}"
+      command = "touch {{output}}"
       description = "stamp {{output}}"
     }
 
