@@ -974,47 +974,9 @@ optional("gpu") {
 
   if (skia_use_gl) {
     public_defines += [ "SK_GL" ]
-    if (is_android) {
-      sources += [
-        "src/gpu/ganesh/gl/egl/GrGLMakeEGLInterface.cpp",
-        "src/gpu/ganesh/gl/egl/GrGLMakeNativeInterface_egl.cpp",
-      ]
-      sources += skia_android_gl_sources
-
-      # this lib is required to link against AHardwareBuffer
-      if (defined(ndk_api) && ndk_api >= 26) {
-        libs += [ "android" ]
-      }
-    } else if (skia_use_egl) {
-      if (skia_use_epoxy_egl) {
-        sources += [ "src/gpu/ganesh/gl/epoxy/GrGLMakeEpoxyEGLInterface.cpp" ]
-        libs += [ "epoxy" ]
-      } else {
-        sources += [
-          "src/gpu/ganesh/gl/egl/GrGLMakeEGLInterface.cpp",
-          "src/gpu/ganesh/gl/egl/GrGLMakeNativeInterface_egl.cpp",
-        ]
-        libs += [ "EGL" ]
-      }
-    } else if (skia_use_webgl) {
-      sources += [ "src/gpu/ganesh/gl/webgl/GrGLMakeNativeInterface_webgl.cpp" ]
-    } else if (is_linux && skia_use_x11) {
-      sources += [
-        "src/gpu/ganesh/gl/glx/GrGLMakeGLXInterface.cpp",
-        "src/gpu/ganesh/gl/glx/GrGLMakeNativeInterface_glx.cpp",
-      ]
-      libs += [ "GL" ]
-    } else if (is_mac) {
-      sources += [ "src/gpu/ganesh/gl/mac/GrGLMakeNativeInterface_mac.cpp" ]
-    } else if (is_ios) {
-      sources += [ "src/gpu/ganesh/gl/iOS/GrGLMakeNativeInterface_iOS.cpp" ]
-    } else if (is_win && !skia_enable_winuwp) {
-      sources += [ "src/gpu/ganesh/gl/win/GrGLMakeNativeInterface_win.cpp" ]
-      if (target_cpu != "arm64") {
-        libs += [ "OpenGL32.lib" ]
-      }
-    } else {
-      sources += [ "src/gpu/ganesh/gl/GrGLMakeNativeInterface_none.cpp" ]
+    sources += [ "src/gpu/ganesh/gl/win/GrGLMakeNativeInterface_win.cpp" ]
+    if (target_cpu != "arm64") {
+      libs += [ "OpenGL32.lib" ]
     }
     public += skia_gpu_gl_public
     sources += skia_gpu_gl_private
