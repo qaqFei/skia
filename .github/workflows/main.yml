@@ -84,7 +84,7 @@ env:
     cc="x86_64-w64-mingw32-gcc"
     cxx="x86_64-w64-mingw32-g++"
     rc="x86_64-w64-mingw32-windres"
-    extra_cflags=["-O3","-DSK_DISABLE_LEGACY_PNG_WRITEBUFFER"]
+    extra_cflags=["-O3","-DSK_DISABLE_LEGACY_PNG_WRITEBUFFER","-D__forceinline=inline"]
 
 jobs:
   build:
