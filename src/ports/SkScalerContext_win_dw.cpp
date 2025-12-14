@@ -50,15 +50,6 @@
 #include <dwrite_1.h>
 #include <dwrite_3.h>
 
-IDWriteFontFace4Patch : public IDWriteFontFace4 {
-    public:
-    virtual HRESULT STDMETHODCALLTYPE GetGlyphImageFormats(
-        UINT32 glyphId,
-        UINT32 pixelsPerEm,
-        UINT32 maxImageFileSize,
-        DWRITE_GLYPH_IMAGE_FORMATS *formats) = 0;
-};
-
 namespace {
 static inline const constexpr bool kSkShowTextBlitCoverage = false;
 
@@ -1724,7 +1715,7 @@ bool SkScalerContext_DW::generatePngMetrics(const SkGlyph& glyph, SkRect* bounds
     }
 
     DWRITE_GLYPH_IMAGE_FORMATS imageFormats;
-    HRBM((IDWriteFontFace4Patch*)fontFace4->GetGlyphImageFormats(glyph.getGlyphID(), 0, UINT32_MAX, &imageFormats),
+    HRBM(fontFace4->GetGlyphImageFormats(glyph.getGlyphID(), 0, UINT32_MAX, &imageFormats),
          "Cannot get glyph image formats.");
     if (!(imageFormats & DWRITE_GLYPH_IMAGE_FORMATS_PNG)) {
         return false;
@@ -2275,7 +2266,7 @@ bool SkScalerContext_DW::drawSVGImage(const SkGlyph& glyph, SkCanvas& canvas) {
     }
 
     DWRITE_GLYPH_IMAGE_FORMATS imageFormats;
-    HRBM((IDWriteFontFace4Patch*)fontFace4->GetGlyphImageFormats(glyph.getGlyphID(), 0, UINT32_MAX, &imageFormats),
+    HRBM(fontFace4->GetGlyphImageFormats(glyph.getGlyphID(), 0, UINT32_MAX, &imageFormats),
          "Cannot get glyph image formats.");
     if (!(imageFormats & DWRITE_GLYPH_IMAGE_FORMATS_SVG)) {
         return false;

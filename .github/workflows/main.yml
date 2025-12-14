@@ -50,7 +50,7 @@ env:
     skia_use_dawn=false
     skia_use_direct3d=false
     skia_enable_fontmgr_empty=false
-    skia_enable_fontmgr_win=true
+    skia_enable_fontmgr_win=false
     skia_enable_fontmgr_win_gdi=false
     skia_use_icu=false
     skia_use_libpng_decode=true
