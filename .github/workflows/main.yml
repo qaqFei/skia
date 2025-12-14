@@ -136,15 +136,17 @@ jobs:
               binutils-mingw-w64-x86-64
           
           sudo apt install -y \
-            zlib1g-dev-mingw-w64 \
-            libpng-dev-mingw-w64 \
-            libjpeg-turbo8-dev-mingw-w64 \
-            libwebp-dev-mingw-w64 \
-            libexpat1-dev-mingw-w64 \
-            freetype-dev-mingw-w64 \
-            harfbuzz-dev-mingw-w64 \
-            bzip2-dev-mingw-w64 \
-            libgif-dev-mingw-w64
+            mingw-w64-tools \
+            mingw-w64-x86-64-dev \
+            mingw-w64-zlib-dev \
+            mingw-w64-libpng-dev \
+            mingw-w64-libjpeg-turbo-dev \
+            mingw-w64-libwebp-dev \
+            mingw-w64-expat-dev \
+            mingw-w64-freetype-dev \
+            mingw-w64-harfbuzz-dev \
+            mingw-w64-bzip2-dev \
+            mingw-w64-gif-dev
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git  --depth 1 $HOME/depot_tools
           echo "$HOME/depot_tools" >> $GITHUB_PATH
 
