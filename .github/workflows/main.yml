@@ -76,6 +76,9 @@ env:
     skia_use_system_libwebp=false
     skia_use_system_zlib=false
     skia_use_system_icu=false
+    skia_enable_fontmgr_win_gdi=true
+    skia_use_directwrite=false
+    skia_use_dwrite=false
     # ===== 下面 4 行让 GN 正确找到 MinGW 交叉工具链 =====
     ar="x86_64-w64-mingw32-ar"
     cc="x86_64-w64-mingw32-gcc"
