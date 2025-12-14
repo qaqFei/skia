@@ -13,6 +13,7 @@ env:
     is_official_build=true
     is_debug=false
     clang_win=false
+    skia_enable_gpu = true
     skia_use_gl=true
     skia_use_egl=false
     skia_use_vulkan=false
